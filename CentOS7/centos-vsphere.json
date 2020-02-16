@@ -1,27 +1,25 @@
 {
   "variables": {
-    "vsphere-server": "mgmt-vc02.corp.local",
+    "vsphere-server": "vcenter.corp.local",
     "vsphere-user": "administrator@vsphere.local",
     "vsphere-password": "VMware1!",
-
     "vsphere-datacenter": "Labs-DC02",
     "vsphere-cluster": "DC02-Cluster",
-    "vsphere-network": "vlan500",
-    "vsphere-datastore": "SSD_wanning",
-
-    "vm-name": "CentOS7-Template",
+    "vsphere-network": "vlan100",
+    "vsphere-datastore": "SSD_DATASTORE",
+    "vm-name": "CentOS7-T",
     "vm-version": "15",
     "vm-folder": "Templates",
     "vm-cpu-num": "1",
     "vm-mem-size": "1024",
     "vm-disk-size": "81920",
-    "iso_url": "[SSD_wanning] 0-ISO/CentOS-7-x86_64-DVD-1908.iso"
+    "iso_url": "[SSD_DATASTORE] 0-ISO/CentOS-7-x86_64-DVD-1908.iso",
+    "magic_reference_date": "2006-01-02 15-04-05+0800"
   },
 
   "builders": [
     {
       "type": "vsphere-iso",
-
       "vcenter_server": "{{user `vsphere-server`}}",
       "username": "{{user `vsphere-user`}}",
       "password": "{{user `vsphere-password`}}",
@@ -32,10 +30,10 @@
       "network": "{{user `vsphere-network`}}",
       "datastore": "{{user `vsphere-datastore`}}",
 
-      "vm_name": "{{user `vm-name`}}",
+      "vm_name": "{{user `vm-name`}}-{{isotime \"2006-01-02\"}}",
       "vm_version": "{{user `vm-version`}}",
       "folder": "{{user `vm-folder`}}",
-      "notes": "Build via Packer",
+      "notes": "Build via Packer in {{ (isotime | (user `magic_reference_date`)) | clean_ami_name }}",
 
       "boot_wait": "10s",
       "boot_order": "disk,cdrom,floppy",
