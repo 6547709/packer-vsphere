@@ -33,7 +33,7 @@
       "vm_name": "{{user `vm-name`}}-{{isotime \"2006-01-02\"}}",
       "vm_version": "{{user `vm-version`}}",
       "folder": "{{user `vm-folder`}}",
-      "notes": "Build via Packer in {{ (isotime | (user `magic_reference_date`)) | clean_ami_name }}",
+      "notes": "Build via Packer in {{ (isotime | (user `magic_reference_date`)) }}",
 
       "boot_wait": "10s",
       "boot_order": "disk,cdrom,floppy",
