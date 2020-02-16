@@ -1,0 +1,94 @@
+{
+  "variables": {
+    "vsphere-server": "vcenter.corp.local",
+    "vsphere-user": "administrator@vsphere.local",
+    "vsphere-password": "VMware1!",
+
+    "vsphere-datacenter": "Labs-DC02",
+    "vsphere-cluster": "DC02-Cluster",
+    "vsphere-network": "vlan100",
+    "vsphere-datastore": "SSD_DATASTORE",
+
+    "vm-name": "WIN2016-T",
+    "vm-version": "15",
+    "vm-folder": "Templates",
+    "vm-cpu-num": "2",
+    "vm-mem-size": "4096",
+    "vm-disk-size": "81920",
+    "winadmin-password": "VMware1!",
+    "iso_url": "[SSD_DATASTORE] 0-ISO/cn_windows_server_2016_vl_x64_dvd.iso",
+    "iso_vm_tools_url":"[SSD_DATASTORE] 0-ISO/windows.iso",
+    "magic_reference_date": "2006-01-02 15-04-05+0800"
+  },
+
+  "sensitive-variables": ["vsphere_password", "winadmin_password"],
+
+  "builders": [
+    {
+      "type": "vsphere-iso",
+
+      "vcenter_server": "{{user `vsphere-server`}}",
+      "username": "{{user `vsphere-user`}}",
+      "password": "{{user `vsphere-password`}}",
+      "insecure_connection": "true",
+
+      "datacenter": "{{user `vsphere-datacenter`}}",
+      "cluster": "{{user `vsphere-cluster`}}",
+      "network": "{{user `vsphere-network`}}",
+      "datastore": "{{user `vsphere-datastore`}}",
+
+      "vm_name": "{{user `vm-name`}}-{{isotime \"2006-01-02\"}}",
+      "vm_version": "{{user `vm-version`}}",
+      "folder": "{{user `vm-folder`}}",
+      "notes": "Build via Packer in {{ (isotime | (user `magic_reference_date`)) | clean_ami_name }}",
+
+      "boot_wait": "10s",
+      "boot_order": "disk,cdrom,floppy",
+
+      "guest_os_type": "windows9Server64Guest",
+
+      "ssh_username": "root",
+      "ssh_password": "VMware1!",
+
+      "communicator": "winrm",
+      "winrm_username": "Administrator",
+      "winrm_password": "{{user `winadmin-password`}}",
+
+      "CPUs": "{{user `vm-cpu-num`}}",
+      "RAM": "{{user `vm-mem-size`}}",
+      "RAM_reserve_all": false,
+      "firmware": "bios",
+
+      "disk_controller_type": "pvscsi",
+      "disk_size": "{{user `vm-disk-size`}}",
+      "disk_thin_provisioned": true,
+      "network_card": "vmxnet3",
+
+      "convert_to_template": true,
+
+      "iso_paths": [
+        "{{user `iso_url`}}",
+        "{{user `iso_vm_tools_url`}}"
+      ],
+      "floppy_files": [
+        "./autounattend.xml",
+        "./scripts/disable-network-discovery.cmd",
+        "./scripts/disable-winrm.ps1",
+        "./scripts/enable-rdp.cmd",
+        "./scripts/enable-winrm.ps1",
+        "./scripts/install-vm-tools.cmd",
+        "./scripts/set-temp.ps1"
+      ],
+      "floppy_img_path": "[SSD_DATASTORE] 0-ISO/VMwareTools/pvscsi-Windows8.flp"
+    }
+  ],
+
+  "provisioners": [
+    {
+      "type": "windows-shell",
+      "inline": [
+         "ipconfig"
+      ]
+    }
+  ]
+}
