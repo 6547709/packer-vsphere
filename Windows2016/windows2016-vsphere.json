@@ -71,7 +71,7 @@
         "{{user `iso_vm_tools_url`}}"
       ],
       "floppy_files": [
-        "./autounattend.xml",
+        "./Autounattend.xml",
         "./scripts/disable-network-discovery.cmd",
         "./scripts/disable-winrm.ps1",
         "./scripts/enable-rdp.cmd",
