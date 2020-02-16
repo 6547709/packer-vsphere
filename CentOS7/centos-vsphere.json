@@ -66,8 +66,6 @@
     {
       "type": "shell",
       "inline": [
-        "sed -i 's@#UseDNS yes@UseDNS no@g' /etc/ssh/sshd_config",
-        "sed -i '/^GSSAPIAuthentication yes/d' /etc/ssh/sshd_config",
         "rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7",
         "yum install deltarpm -y",
         "yum update -y",
