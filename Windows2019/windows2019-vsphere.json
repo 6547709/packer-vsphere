@@ -1,0 +1,99 @@
+{
+  "builders": [
+    {
+      "CPUs": "{{user `vm-cpu-num`}}",
+      "RAM": "{{user `vm-mem-size`}}",
+      "RAM_reserve_all": false,
+      "boot_order": "disk,cdrom,floppy",
+      "boot_wait": "10s",
+      "cluster": "{{user `vsphere-cluster`}}",
+      "communicator": "winrm",
+      "convert_to_template": true,
+      "datacenter": "{{user `vsphere-datacenter`}}",
+      "datastore": "{{user `vsphere-datastore`}}",
+      "disk_controller_type": "pvscsi",
+      "firmware": "bios",
+      "floppy_files": [
+        "./Autounattend.xml",
+        "./scripts/disable-network-discovery.cmd",
+        "./scripts/disable-winrm.ps1",
+        "./scripts/enable-rdp.cmd",
+        "./scripts/enable-winrm.ps1",
+        "./scripts/install-vm-tools.cmd",
+        "./scripts/set-temp.ps1"
+      ],
+      "floppy_img_path": "[SSD_DATASTORE] 0-ISO/Windows/pvscsi-Windows8.flp",
+      "folder": "{{user `vm-folder`}}",
+      "guest_os_type": "windows2019srv_64Guest",
+      "insecure_connection": "true",
+      "iso_paths": [
+        "{{user `iso_url`}}",
+        "{{user `iso_vm_tools_url`}}"
+      ],
+      "network_adapters": [
+        {
+          "network": "{{user `vsphere-network`}}",
+          "network_card": "vmxnet3"
+        }
+      ],
+      "notes": "Build via Packer in {{ (isotime | (user `magic_reference_date`)) }}",
+      "password": "{{user `vsphere-password`}}",
+      "ssh_password": "VC@ccutninc123",
+      "ssh_username": "root",
+      "storage": [
+        {
+          "disk_size": "{{user `vm-disk-size`}}",
+          "disk_thin_provisioned": true
+        }
+      ],
+      "type": "vsphere-iso",
+      "username": "{{user `vsphere-user`}}",
+      "vcenter_server": "{{user `vsphere-server`}}",
+      "vm_name": "{{user `vm-name`}}-{{isotime \"2006-01-02\"}}",
+      "vm_version": "{{user `vm-version`}}",
+      "winrm_password": "{{user `winadmin-password`}}",
+      "winrm_username": "Administrator"
+    }
+  ],
+  "provisioners": [
+    {
+      "inline": [
+        "ipconfig"
+      ],
+      "type": "windows-shell"
+    },
+    {
+      "filters": [
+        "exclude:$_.Title -like '*Preview*'",
+        "include:$true"
+      ],
+      "search_criteria": "IsInstalled=0",
+      "type": "windows-update",
+      "update_limit": 25
+    }
+  ],
+  "sensitive-variables": [
+    "vsphere_password",
+    "winadmin_password"
+  ],
+  "variables": {
+    "iso_url": "[SSD_DATASTORE] 0-ISO/Windows/cn_windows_server_2019_x64_dvd.iso",
+    "iso_vm_tools_url": "[SSD_DATASTORE] 0-ISO/Windows/VMware-tools-windows-11.1.1.iso",
+    "magic_reference_date": "2006-01-02 15-04-05+0800",
+    "vm-cpu-num": "2",
+    "vm-disk-size": "81920",
+    "vm-folder": "Templates",
+    "vm-mem-size": "4096",
+    "vm-name": "WIN2019-T",
+    "vm-version": "17",
+    "vsphere-cluster": "DC02-Cluster",
+    "vsphere-datacenter": "Labs_DC02",
+    "vsphere-datastore": "SSD_DATASTORE",
+    "vsphere-network": "vlan100",
+    "vsphere-password": "VMware1!",
+    "vsphere-server": "vcenter.corp.local",
+    "vsphere-user": "administrator@vsphere.local",
+    "winadmin-password": "VMware1!"
+  }
+}
+
