@@ -13,6 +13,7 @@
     "vm-cpu-num": "1",
     "vm-mem-size": "1024",
     "vm-disk-size": "81920",
+    "vm-video-ram": "16384",
     "iso_url": "[SSD_DATASTORE] 0-ISO/CentOS-7-x86_64-DVD-1908.iso",
     "magic_reference_date": "2006-01-02 15-04-05+0800"
   },
@@ -50,7 +51,7 @@
       "disk_size": "{{user `vm-disk-size`}}",
       "disk_thin_provisioned": true,
       "network_card": "vmxnet3",
-
+      "video_ram": "{{user `vm-video-ram`}}",
       "convert_to_template": true,
 
       "iso_paths": ["{{user `iso_url`}}"],
