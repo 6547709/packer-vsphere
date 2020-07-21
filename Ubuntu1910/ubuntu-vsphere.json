@@ -1,0 +1,89 @@
+{
+  "builders": [
+    {
+      "CPUs": "{{user `vm-cpu-num`}}",
+      "RAM": "{{user `vm-mem-size`}}",
+      "RAM_reserve_all": false,
+      "boot_command": [
+        "<enter><wait><f6><wait><esc><wait>",
+        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+        "<bs><bs><bs>",
+        "/install/vmlinuz",
+        " initrd=/install/initrd.gz",
+        " priority=critical",
+        " locale=en_US",
+        " interface=eth0",
+        " file=/media/preseed.cfg",
+        "<enter>"
+      ],
+      "cluster": "{{user `vsphere-cluster`}}",
+      "convert_to_template": "true",
+      "datacenter": "{{user `vsphere-datacenter`}}",
+      "datastore": "{{user `vsphere-datastore`}}",
+      "disk_controller_type": "pvscsi",
+      "floppy_files": ["./preseed.cfg"],
+      "folder": "{{user `vm-folder`}}",
+      "guest_os_type": "ubuntu64Guest",
+      "insecure_connection": "true",
+      "iso_paths": [
+        "{{user `iso_url`}}"
+      ],
+      "network_adapters": [
+        {
+          "network": "{{user `vsphere-network`}}",
+          "network_card": "vmxnet3"
+        }
+      ],
+      "video_ram": "{{user `vm-video-ram`}}",
+      "password": "{{user `vsphere-password`}}",
+      "ssh_password": "VMware1!",
+      "ssh_username": "root",
+      "storage": [
+        {
+          "disk_size": "{{user `vm-disk-size`}}",
+          "disk_thin_provisioned": true
+        }
+      ],
+      "type": "vsphere-iso",
+      "username": "{{user `vsphere-user`}}",
+      "vcenter_server": "{{user `vsphere-server`}}",
+      "vm_name": "{{user `vm-name`}}"
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "shell",
+      "inline": [
+        "truncate -s 0 /etc/machine-id",
+        "rm /var/lib/dbus/machine-id",
+        "ln -s /etc/machine-id /var/lib/dbus/machine-id",
+        "rm -rf /tmp/* /var/tmp/*",
+        "hostnamectl set-hostname {{user `vm-name`}}"
+      ]
+    }
+  ],
+  "variables": {
+    "iso_url": "[SSD_DATASTORE] 0-ISO/ubuntu-19.10-server-amd64.iso",
+    "vm-cpu-num": "2",
+    "vm-disk-size": "81920",
+    "vm-folder": "Templates",
+    "vm-mem-size": "4096",
+    "vm-name": "Ubuntu1910-T",
+    "vm-version": "17",
+    "vm-video-ram": "16384",
+    "vsphere-cluster": "DC02-Cluster",
+    "vsphere-datacenter": "Labs-DC02",
+    "vsphere-datastore": "SSD_DATASTORE",
+    "vsphere-network": "vlan100",
+    "vsphere-password": "VMware1!",
+    "vsphere-server": "vcenter.corp.local",
+    "vsphere-user": "administrator@vsphere.local"
+  }
+}
