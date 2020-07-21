@@ -36,6 +36,7 @@
           "network_card": "vmxnet3"
         }
       ],
+      "video_ram": "{{user `vm-video-ram`}}",
       "notes": "Build via Packer in {{ (isotime | (user `magic_reference_date`)) }}",
       "password": "{{user `vsphere-password`}}",
       "ssh_password": "VC@ccutninc123",
@@ -86,6 +87,7 @@
     "vm-mem-size": "4096",
     "vm-name": "WIN2019-T",
     "vm-version": "17",
+    "vm-video-ram": "16384",
     "vsphere-cluster": "DC02-Cluster",
     "vsphere-datacenter": "Labs_DC02",
     "vsphere-datastore": "SSD_DATASTORE",
@@ -96,4 +98,3 @@
     "winadmin-password": "VMware1!"
   }
 }
-
