@@ -50,6 +50,9 @@
   "provisioners": [
     {
       "inline": [
+        "yum install -y https://mirrors.aliyun.com/epel/epel-release-latest-8.noarch.rpm",
+        "sed -i 's|^#baseurl=https://download.fedoraproject.org/pub|baseurl=https://mirrors.aliyun.com|' /etc/yum.repos.d/epel*",
+        "sed -i 's|^metalink|#metalink|' /etc/yum.repos.d/epel*",
         "yum update -y",
         "yum clean all",
         "systemctl enable --now cockpit.socket"
