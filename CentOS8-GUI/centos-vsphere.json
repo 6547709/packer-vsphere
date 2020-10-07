@@ -79,8 +79,8 @@
     }
   ],
   "variables": {
-    "iso_url": "[SSD_wanning] 0-ISO/CentOS-8.2.2004-x86_64-dvd1.iso",
-    "ks_iso": "[SSD_wanning] 0-ISO/centos8-gui-ks.iso",
+    "iso_url": "[SSD_DATASTORE] 0-ISO/CentOS-8.2.2004-x86_64-dvd1.iso",
+    "ks_iso": "[SSD_DATASTORE] 0-ISO/centos8-gui-ks.iso",
     "vm-cpu-num": "2",
     "vm-disk-size": "81920",
     "vm-folder": "Templates",
