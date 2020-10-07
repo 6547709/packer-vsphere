@@ -1,0 +1,99 @@
+{
+  "builders": [
+    {
+      "CPUs": "{{user `vm-cpu-num`}}",
+      "RAM": "{{user `vm-mem-size`}}",
+      "RAM_reserve_all": false,
+      "boot_command": [
+        "<esc><wait>",
+        "linux ks=hd:sr1:/ks.cfg<enter>"
+      ],
+      "boot_order": "disk,cdrom",
+      "boot_wait": "10s",
+      "cluster": "{{user `vsphere-cluster`}}",
+      "convert_to_template": true,
+      "datacenter": "{{user `vsphere-datacenter`}}",
+      "datastore": "{{user `vsphere-datastore`}}",
+      "disk_controller_type": "pvscsi",
+      "folder": "{{user `vm-folder`}}",
+      "guest_os_type": "centos8_64Guest",
+      "insecure_connection": "true",
+      "remove_cdrom": "true",
+      "iso_paths": [
+        "{{user `iso_url`}}",
+        "{{user `ks_iso`}}"
+      ],
+      "network_adapters": [
+        {
+          "network": "{{user `vsphere-network`}}",
+          "network_card": "vmxnet3"
+        }
+      ],
+      "notes": "Build via Packer in {{isotime \"2006-01-02\"}}",
+      "password": "{{user `vsphere-password`}}",
+      "ssh_password": "VMware1!",
+      "ssh_username": "root",
+      "storage": [
+        {
+          "disk_size": "{{user `vm-disk-size`}}",
+          "disk_thin_provisioned": true
+        }
+      ],
+      "type": "vsphere-iso",
+      "username": "{{user `vsphere-user`}}",
+      "vcenter_server": "{{user `vsphere-server`}}",
+      "video_ram": "{{user `vm-video-ram`}}",
+      "vm_name": "{{user `vm-name`}}-{{isotime \"2006-01-02\"}}",
+      "vm_version": "{{user `vm-version`}}"
+    }
+  ],
+  "provisioners": [
+    {
+      "inline": [
+        "yum install -y https://mirrors.aliyun.com/epel/epel-release-latest-8.noarch.rpm",
+        "sed -i 's|^#baseurl=https://download.fedoraproject.org/pub|baseurl=https://mirrors.aliyun.com|' /etc/yum.repos.d/epel*",
+        "sed -i 's|^metalink|#metalink|' /etc/yum.repos.d/epel*",
+        "dnf -y install https://www.elrepo.org/elrepo-release-8.el8.elrepo.noarch.rpm",
+        "rpm --import https://www.elrepo.org/RPM-GPG-KEY-elrepo.org",
+        "dnf -y --enablerepo=elrepo-kernel install kernel-ml",
+        "dnf -y --enablerepo=elrepo-kernel install kernel-ml-{devel,headers}",
+        "yum -y update",
+        "yum clean all",
+        "systemctl enable --now cockpit.socket",
+        "reboot"
+      ],
+      "type": "shell",
+      "expect_disconnect": true
+    },
+    {
+      "inline": [
+        "grub2-set-default 0",
+        "grub2-mkconfig -o /boot/grub2/grub.cfg",
+        "rm -rf /root/anaconda-ks.cfg",
+        "rm -rf /root/original-ks.cfg"
+      ],
+      "type": "shell",
+      "pause_before": "40s",
+      "expect_disconnect": true
+    }
+  ],
+
+  "variables": {
+    "iso_url": "[SSD_DATASTORE] 0-ISO/CentOS-8.2.2004-x86_64-dvd1.iso",
+    "ks_iso": "[SSD_DATASTORE] 0-ISO/centos8_ks.iso",
+    "vm-cpu-num": "2",
+    "vm-disk-size": "81920",
+    "vm-folder": "Templates",
+    "vm-mem-size": "4096",
+    "vm-name": "CentOS8-Cilium",
+    "vm-version": "17",
+    "vm-video-ram": "16384",
+    "vsphere-cluster": "DC02-Cluster",
+    "vsphere-datacenter": "Labs-DC02",
+    "vsphere-datastore": "SSD_DATATORE",
+    "vsphere-network": "vlan100",
+    "vsphere-password": "VMware1!",
+    "vsphere-server": "vcenter.corp.local",
+    "vsphere-user": "administrator@vsphere.local"
+  }
+}
