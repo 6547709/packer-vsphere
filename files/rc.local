@@ -1,8 +1,0 @@
-#!/bin/bash
-
-if [ -e /usr/local/customization/ran_customization ]; then
-    exit
-else
-    /usr/local/customization/setup.sh &> /var/log/centos-customization.log
-fi
-
