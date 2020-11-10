@@ -1,1 +1,0 @@
-    <Disk ovf:capacity="${Disk1Size}" ovf:capacityAllocationUnits="byte * 2^30" ovf:diskId="vmdisk2" ovf:format="http://www.vmware.com/interfaces/specifications/vmdk.html#streamOptimized" ovf:populatedSize="0"/>
