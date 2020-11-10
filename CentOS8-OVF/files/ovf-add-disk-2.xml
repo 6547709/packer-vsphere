@@ -1,0 +1,9 @@
+      <Item>
+        <rasd:AddressOnParent>1</rasd:AddressOnParent>
+        <rasd:ElementName>Hard disk 2</rasd:ElementName>
+        <rasd:HostResource>ovf:/disk/vmdisk2</rasd:HostResource>
+        <rasd:InstanceID>10</rasd:InstanceID>
+        <rasd:Parent>3</rasd:Parent>
+        <rasd:ResourceType>17</rasd:ResourceType>
+        <vmw:Config ovf:required="false" vmw:key="backing.writeThrough" vmw:value="false"/>
+      </Item>
